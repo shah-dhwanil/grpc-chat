@@ -1,0 +1,12 @@
+syntax = "proto3";
+package error.v1;
+option go_package = "github.com/shah-dhwanil/grpc-chat/packages/api/gen/error/v1;errorv1";
+
+import "google/protobuf/any.proto";
+
+message Error {
+  string type = 1;
+  string name = 2;
+  string detail = 3;
+  map<string,google.protobuf.Any> context = 4;
+}

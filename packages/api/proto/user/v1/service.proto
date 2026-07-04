@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package user.v1;
+option go_package = "github.com/shah-dhwanil/grpc-chat/packages/api/gen/user/v1;userv1";
+
+import "user/v1/request.proto";
+import "user/v1/response.proto";
+
+service UserService {
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
+  rpc GetUser(GetUserRequest) returns (GetUserResponse);
+  rpc ListUser(ListUserRequest) returns(ListUserResponse);
+  rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse);
+  rpc SetUserPrimaryEmail(SetUserPrimaryEmailRequest) returns (SetUserPrimaryEmailResponse);
+  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse);
+}
