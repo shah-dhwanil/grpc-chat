@@ -39,7 +39,7 @@ func ConstructSetClause(fields []string) string {
 func QueryInTransaction[T any](ctx context.Context, executor DBTX, fn func(Tx)(T,error)) (T,error) {
 	var zero T
 	if executor == nil {
-		return zero, pkgerror.NewUnknownError(nil, "Database Error", "Database connection is not initialized", nil)
+		return zero, pkgerror.NewUnknownError(nil, "DATABSE_ERROR", "Database connection is not initialized", nil)
 	}
 	txn,err:=executor.Begin(ctx)
 	if err!=nil {
@@ -47,7 +47,7 @@ func QueryInTransaction[T any](ctx context.Context, executor DBTX, fn func(Tx)(T
 		if ok {
 			return zero,dbError
 		}
-		return zero,pkgerror.NewUnknownError(err,"Database Error","Unknown Error while starting transaction",nil)
+		return zero,pkgerror.NewUnknownError(err,"DATABSE_ERROR","Unknown Error while starting transaction",nil)
 	}
 	rows,err:=fn(txn)
 	if err!=nil {
@@ -58,14 +58,14 @@ func QueryInTransaction[T any](ctx context.Context, executor DBTX, fn func(Tx)(T
 		if ok {
 			return zero,dbError
 		}
-		return zero,pkgerror.NewUnknownError(err,"Database Error","Unknown Error while executing transaction",nil)
+		return zero,pkgerror.NewUnknownError(err,"DATABSE_ERROR","Unknown Error while executing transaction",nil)
 	}
 	if err = txn.Commit(ctx); err != nil {
 		dbError,ok :=ConvertPgError(err)
 		if ok {
 			return zero,dbError
 		}
-		return zero,pkgerror.NewUnknownError(err,"Database Error","Unknown Error while committing transaction",nil)
+		return zero,pkgerror.NewUnknownError(err,"DATABSE_ERROR","Unknown Error while committing transaction",nil)
 	}
 	return rows,nil
 }

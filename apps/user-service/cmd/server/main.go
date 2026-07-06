@@ -26,7 +26,7 @@ func main() {
    	if err != nil {
       panic(err)
    }
-   srv := grpc.NewServer(grpc.UnaryInterceptor(interceptor.UnaryAuthInterceptor))
+   srv := grpc.NewServer(grpc.ChainUnaryInterceptor(interceptor.ErrorInterceptor,interceptor.UnaryAuthInterceptor))
    userv1.RegisterUserServiceServer(srv,service.UserService)
    reflection.Register(srv)
    if e := srv.Serve(listener); e != nil {

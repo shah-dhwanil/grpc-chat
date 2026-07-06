@@ -195,13 +195,13 @@ func ConvertPgError(err error) (error, bool) {
 
 }
 
-func NewStructToPayloadConversionError(err error, resource string) *pkgerror.AppError {
+func NewStructToPayloadConversionError(err error, operation string) *pkgerror.AppError {
 	return pkgerror.NewAppError(
 		pkgerror.Internal,
-		"Struct to Payload Conversion Error",
+		"STRUCT_CONVERSION_ERROR",
 		"Failed to convert struct to payload: "+err.Error(),
 		map[string]any{
-			"resource": resource,
+			"operation": operation,
 		},
 		err,
 	)

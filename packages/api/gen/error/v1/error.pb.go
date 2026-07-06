@@ -9,7 +9,7 @@ package errorv1
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	anypb "google.golang.org/protobuf/types/known/anypb"
+	structpb "google.golang.org/protobuf/types/known/structpb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -27,7 +27,7 @@ type Error struct {
 	Type          string                 `protobuf:"bytes,1,opt,name=type,proto3" json:"type,omitempty"`
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	Detail        string                 `protobuf:"bytes,3,opt,name=detail,proto3" json:"detail,omitempty"`
-	Context       map[string]*anypb.Any  `protobuf:"bytes,4,rep,name=context,proto3" json:"context,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	Context       *structpb.Struct       `protobuf:"bytes,4,opt,name=context,proto3" json:"context,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -83,7 +83,7 @@ func (x *Error) GetDetail() string {
 	return ""
 }
 
-func (x *Error) GetContext() map[string]*anypb.Any {
+func (x *Error) GetContext() *structpb.Struct {
 	if x != nil {
 		return x.Context
 	}
@@ -94,15 +94,12 @@ var File_error_v1_error_proto protoreflect.FileDescriptor
 
 const file_error_v1_error_proto_rawDesc = "" +
 	"\n" +
-	"\x14error/v1/error.proto\x12\berror.v1\x1a\x19google/protobuf/any.proto\"\xd1\x01\n" +
+	"\x14error/v1/error.proto\x12\berror.v1\x1a\x1cgoogle/protobuf/struct.proto\"z\n" +
 	"\x05Error\x12\x12\n" +
 	"\x04type\x18\x01 \x01(\tR\x04type\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x16\n" +
-	"\x06detail\x18\x03 \x01(\tR\x06detail\x126\n" +
-	"\acontext\x18\x04 \x03(\v2\x1c.error.v1.Error.ContextEntryR\acontext\x1aP\n" +
-	"\fContextEntry\x12\x10\n" +
-	"\x03key\x18\x01 \x01(\tR\x03key\x12*\n" +
-	"\x05value\x18\x02 \x01(\v2\x14.google.protobuf.AnyR\x05value:\x028\x01BEZCgithub.com/shah-dhwanil/grpc-chat/packages/api/gen/error/v1;errorv1b\x06proto3"
+	"\x06detail\x18\x03 \x01(\tR\x06detail\x121\n" +
+	"\acontext\x18\x04 \x01(\v2\x17.google.protobuf.StructR\acontextBEZCgithub.com/shah-dhwanil/grpc-chat/packages/api/gen/error/v1;errorv1b\x06proto3"
 
 var (
 	file_error_v1_error_proto_rawDescOnce sync.Once
@@ -116,20 +113,18 @@ func file_error_v1_error_proto_rawDescGZIP() []byte {
 	return file_error_v1_error_proto_rawDescData
 }
 
-var file_error_v1_error_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_error_v1_error_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_error_v1_error_proto_goTypes = []any{
-	(*Error)(nil),     // 0: error.v1.Error
-	nil,               // 1: error.v1.Error.ContextEntry
-	(*anypb.Any)(nil), // 2: google.protobuf.Any
+	(*Error)(nil),           // 0: error.v1.Error
+	(*structpb.Struct)(nil), // 1: google.protobuf.Struct
 }
 var file_error_v1_error_proto_depIdxs = []int32{
-	1, // 0: error.v1.Error.context:type_name -> error.v1.Error.ContextEntry
-	2, // 1: error.v1.Error.ContextEntry.value:type_name -> google.protobuf.Any
-	2, // [2:2] is the sub-list for method output_type
-	2, // [2:2] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	1, // 0: error.v1.Error.context:type_name -> google.protobuf.Struct
+	1, // [1:1] is the sub-list for method output_type
+	1, // [1:1] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_error_v1_error_proto_init() }
@@ -143,7 +138,7 @@ func file_error_v1_error_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_error_v1_error_proto_rawDesc), len(file_error_v1_error_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   1,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

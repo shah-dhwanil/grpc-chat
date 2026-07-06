@@ -33,10 +33,10 @@ func (e *AppError) Unwrap() error {
 	return e.wrappedError
 }
 
-func NewAppError(errType ErrorType, title string, message string, context map[string]any, wrappedError error) *AppError {
+func NewAppError(errType ErrorType, name string, message string, context map[string]any, wrappedError error) *AppError {
 	return &AppError{
 		Type:         errType,
-		Name:        title,
+		Name:        name,
 		Detail:      message,
 		Context:      context,
 		wrappedError: wrappedError,
