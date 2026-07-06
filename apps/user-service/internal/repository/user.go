@@ -6,9 +6,10 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/shah-dhwanil/grpc-chat/apps/user-service/internal/dto"
 	"github.com/shah-dhwanil/grpc-chat/packages/database/postgres"
+	"github.com/shah-dhwanil/grpc-chat/packages/pkgerror"
+	errs "github.com/shah-dhwanil/grpc-chat/apps/user-service/internal/pkgerror"
 )
 
 type UserRepository struct{
@@ -36,23 +37,21 @@ RETURNING id, name, primary_email, created_at, updated_at
 func (r *UserRepository) CreateUser(ctx context.Context,user *dto.CreateUserRequest) (*dto.User,error) {
 	id,err := uuid.NewV7()
 	if err != nil {
-		return nil, fmt.Errorf("failed to generate user ID: %w", err)
+		return nil, pkgerror.NewInternalError(err,"UUID_GEN_ERROR","Error while generating uuid v7",map[string]any{
+			"operation":"user.create_user",
+		})
 	}
 	args,err := postgres.StructToNamedArgs(user)
 	if 	err != nil {
-		return nil, fmt.Errorf("failed to convert user struct to named args: %w", err)
+		return nil, postgres.NewStructToPayloadConversionError(err,"user.create_user")
 	}
 	args["id"] = id
-	rows, err := postgres.QueryInTransaction(ctx,r.db,
-		func(executor postgres.Tx) (dto.User, error) {
-			rows, _ := executor.Query(ctx, createUserQuery, args)
-			return pgx.CollectOneRow(rows, pgx.RowToStructByName[dto.User])
-		},
-	)
+	rows, _ := r.db.Query(ctx, createUserQuery, args)
+	record,err := pgx.CollectOneRow(rows, pgx.RowToStructByName[dto.User])
 	if err != nil {
-		return nil, fmt.Errorf("failed to create user: %w", err)
+		return nil, mapErrorToRepositoryError(err)
 	}
-	return &rows, nil
+	return &record, nil
 }
 
 const getUserByIDQuery = `
@@ -65,16 +64,12 @@ func (r *UserRepository) GetUserByID(ctx context.Context, id uuid.UUID) (*dto.Us
 	args := pgx.NamedArgs{
 		"id": id,
 	}
-	rows, err := postgres.QueryInTransaction(ctx,r.db,
-		func(executor postgres.Tx) (dto.User, error) {
-			rows, _ := executor.Query(ctx, getUserByIDQuery, args)
-			return pgx.CollectOneRow(rows, pgx.RowToStructByName[dto.User])
-		},
-	)
+	rows, _ := r.db.Query(ctx, getUserByIDQuery, args)
+	record,err:= pgx.CollectOneRow(rows, pgx.RowToStructByName[dto.User])
 	if err != nil {
-		return nil, fmt.Errorf("failed to get user by ID: %w", err)
+		return nil, mapErrorToRepositoryError(err)
 	}
-	return &rows, nil
+	return &record, nil
 }
 
 const getUsersQuery = `
@@ -87,16 +82,13 @@ func (r *UserRepository) GetUsers(ctx context.Context, ids []uuid.UUID) ([]dto.U
 	args := pgx.NamedArgs{
 		"ids": ids,
 	}
-	rows, err := postgres.QueryInTransaction(ctx,r.db,
-		func(executor postgres.Tx) ([]dto.User, error) {
-			rows, _ := executor.Query(ctx, getUsersQuery, args)
-			return pgx.CollectRows(rows, pgx.RowToStructByName[dto.User])
-		},
-	)
+
+	rows, _ := r.db.Query(ctx, getUsersQuery, args)
+	records,err:= pgx.CollectRows(rows, pgx.RowToStructByName[dto.User])
 	if err != nil {
-		return nil, fmt.Errorf("failed to get users: %w", err)
+		return nil, mapErrorToRepositoryError(err)
 	}
-	return rows, nil
+	return records, nil
 }
 
 const updateUserQuery = `
@@ -125,16 +117,12 @@ func (r *UserRepository) UpdateUser(ctx context.Context, id uuid.UUID, user *dto
 	}
 
 	query := fmt.Sprintf(updateUserQuery, postgres.ConstructSetClause(setClause))
-	row,err:= postgres.QueryInTransaction(ctx,r.db,
-		func(executor postgres.Tx) (dto.User, error) {
-			rows, _ := executor.Query(ctx, query, args)
-			return pgx.CollectOneRow(rows, pgx.RowToStructByName[dto.User])
-		},
-	)
+	rows, _ := r.db.Query(ctx, query, args)
+	record,err:= pgx.CollectOneRow(rows, pgx.RowToStructByName[dto.User])
 	if err != nil {
-		return nil, fmt.Errorf("failed to update user: %w", err)
+		return nil, mapErrorToRepositoryError(err)
 	}
-	return &row, nil
+	return &record, nil
 }
 
 const deleteUserQuery = `
@@ -147,14 +135,32 @@ func (r *UserRepository) DeleteUser(ctx context.Context, id uuid.UUID) error {
 	args := pgx.NamedArgs{
 		"id": id,
 	}
-	_, err := postgres.ExecuteInTransaction(ctx,r.db,
-		func(executor postgres.Tx) (pgconn.CommandTag, error) {
-			result, _ := executor.Exec(ctx, deleteUserQuery, args)
-			return result, nil
-		},
-	)
+	_,err := r.db.Exec(ctx, deleteUserQuery, args)
 	if err != nil {
-		return fmt.Errorf("failed to delete user: %w", err)
+		return mapErrorToRepositoryError(err)
 	}
 	return nil
+}
+
+func mapErrorToRepositoryError(err error) error {
+	dbErr, ok := postgres.ConvertPgError(err)
+	if !ok {
+		return pkgerror.NewUnknownError(err, "DATABASE_ERROR", "Unknown Error while fetching record from postgres", nil)
+	}
+	pgErr, ok := dbErr.(*postgres.DatabaseError)
+	if !ok {
+		return pkgerror.NewUnknownError(err, "DATABASE_ERROR", "Unknown Error while fetching record from postgres", nil)
+	}
+	switch pgErr.Code {
+	case postgres.NoRecordsFound:
+		return errs.NewUserNotFoundError(err)
+	case postgres.UniqueViolation:
+		switch pgErr.ConstraintName {
+			case "uq_users_primary_email":
+				return errs.NewUserAlreadyExistsError(pgErr)
+		}
+	default:
+		return pkgerror.NewUnknownError(pgErr, "DATABASE_ERROR", "Unknown Error while fetching record from postgres", nil)
+	}
+	return pkgerror.NewUnknownError(pgErr, "DATABASE_ERROR", "Unknown Error while fetching record from postgres", nil)
 }
