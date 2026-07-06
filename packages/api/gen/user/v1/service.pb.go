@@ -34,7 +34,7 @@ const file_user_v1_service_proto_rawDesc = "" +
 	"UpdateUser\x12\x1a.user.v1.UpdateUserRequest\x1a\x1b.user.v1.UpdateUserResponse\x12`\n" +
 	"\x13SetUserPrimaryEmail\x12#.user.v1.SetUserPrimaryEmailRequest\x1a$.user.v1.SetUserPrimaryEmailResponse\x12E\n" +
 	"\n" +
-	"DeleteUser\x12\x1a.user.v1.DeleteUserRequest\x1a\x1b.user.v1.DeleteUserResponseBCZAgithub.com/shah-dhwanil/grpc-chat/packages/api/gen/user/v1;userv1b\x06proto3"
+	"DeleteUser\x12\x1a.user.v1.DeleteUserRequest\x1a\x1b.user.v1.DeleteUserResponseBCZAgithub.com/shah-dhwanil/grpc-chat/packages/api/gen/user/v1;userv1b\beditionsp\xe9\a"
 
 var file_user_v1_service_proto_goTypes = []any{
 	(*CreateUserRequest)(nil),           // 0: user.v1.CreateUserRequest

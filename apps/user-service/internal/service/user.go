@@ -24,18 +24,18 @@ func NewUserService(repo *repository.Repository) *UserService {
 
 func (srv *UserService) CreateUser(ctx context.Context, payload *userv1.CreateUserRequest) (*userv1.CreateUserResponse, error){
 	res, err :=srv.repository.UserRepository.CreateUser(ctx, &dto.CreateUserRequest{
-		Name: payload.DisplayName,
-		PrimaryEmail: payload.PrimaryEmail,
+		Name: payload.GetDisplayName(),
+		PrimaryEmail: payload.GetPrimaryEmail(),
 	})
 	if err != nil {
 		return nil, err
 	}
-	return &userv1.CreateUserResponse{
-		User: mapToUser(res),
-	},nil
+	response := &userv1.CreateUserResponse{}
+	response.SetUser(mapToUser(res))
+	return response,nil
 }
 func (srv *UserService) GetUser(ctx context.Context, payload *userv1.GetUserRequest) (*userv1.GetUserResponse, error){
-	uid,err := uuid.Parse(payload.UserId)
+	uid,err := uuid.Parse(payload.GetUserId())
 	if err != nil {
 		return nil, err
 	}
@@ -43,13 +43,13 @@ func (srv *UserService) GetUser(ctx context.Context, payload *userv1.GetUserRequ
 	if err != nil {
 		return nil, err
 	}
-	return &userv1.GetUserResponse{
-		User: mapToUser(res),
-	},nil
+	response := &userv1.GetUserResponse{}
+	response.SetUser(mapToUser(res))
+	return response,nil
 }
 func (srv *UserService) ListUser(ctx context.Context, payload *userv1.ListUserRequest) (*userv1.ListUserResponse, error){
-	uids := make([]uuid.UUID, len(payload.UserIds))
-	for i, id := range payload.UserIds {
+	uids := make([]uuid.UUID, len(payload.GetUserIds()))
+	for i, id := range payload.GetUserIds() {
 		uid, err := uuid.Parse(id)
 		if err != nil {
 			return nil, err
@@ -62,44 +62,53 @@ func (srv *UserService) ListUser(ctx context.Context, payload *userv1.ListUserRe
 	}
 	users := make([]*userv1.UserListItem, len(res))
 	for i, user := range res {
-		users[i] = &userv1.UserListItem{
-			Id: user.ID.String(),
-			DisplayName: user.Name,
-		}
+		users[i] = &userv1.UserListItem{}
+		users[i].SetId(user.ID.String())
+		users[i].SetDisplayName(user.Name)
 	}
-	return &userv1.ListUserResponse{
-		Users: users,
-	},nil
+	userRes:=&userv1.ListUserResponse{}
+	userRes.SetUsers(users)
+	return userRes,nil
 }
 func (srv *UserService) UpdateUser(ctx context.Context, payload *userv1.UpdateUserRequest) (*userv1.UpdateUserResponse, error){
 	uid,err := uuid.Parse(ctx.Value("user_id").(string))
 	if err != nil {
 		return nil, err
 	}
+	var name *string = nil
+	if payload.HasDisplayName(){
+		val := payload.GetDisplayName()
+		name = &val
+	}
 	res,err:= srv.repository.UserRepository.UpdateUser(ctx,uid,&dto.UpdateUserRequest{
-		Name: payload.DisplayName,
+		Name: name,
 	})
 	if err != nil {
 		return nil, err
 	}
-	return &userv1.UpdateUserResponse{
-		User: mapToUser(res),
-	},nil
+	response:= &userv1.UpdateUserResponse{}
+	response.SetUser(mapToUser(res))
+	return response,nil
 }
 func (srv *UserService) SetUserPrimaryEmail(ctx context.Context, payload *userv1.SetUserPrimaryEmailRequest) (*userv1.SetUserPrimaryEmailResponse, error){
 	uid,err := uuid.Parse(ctx.Value("user_id").(string))
 	if err != nil {
 		return nil, err
 	}
+	var email *string = nil
+	if payload.HasEmailId(){
+		val := payload.GetEmailId()
+		email = &val
+	}
 	res,err:= srv.repository.UserRepository.UpdateUser(ctx,uid,&dto.UpdateUserRequest{
-		PrimaryEmail: &payload.EmailId,
+		PrimaryEmail: email,
 	})
 	if err != nil {
 		return nil, err
 	}
-	return &userv1.SetUserPrimaryEmailResponse{
-		User: mapToUser(res),
-	},nil
+	response:=&userv1.SetUserPrimaryEmailResponse{}
+	response.SetUser(mapToUser(res))
+	return response,nil
 }
 func (srv *UserService) DeleteUser(ctx context.Context, _ *userv1.DeleteUserRequest) (*userv1.DeleteUserResponse, error){
 	uid,err := uuid.Parse(ctx.Value("user_id").(string))
@@ -115,9 +124,9 @@ func (srv *UserService) DeleteUser(ctx context.Context, _ *userv1.DeleteUserRequ
 
 
 func mapToUser(user *dto.User) *userv1.User{
-	return &userv1.User{
-		Id: user.ID.String(),
-		DisplayName: user.Name,
-		PrimaryEmail: user.PrimaryEmail,
-	}
+	userResponse := &userv1.User{}
+	userResponse.SetId(user.ID.String())
+	userResponse.SetDisplayName(user.Name)
+	userResponse.SetPrimaryEmail(user.PrimaryEmail)
+	return userResponse
 }

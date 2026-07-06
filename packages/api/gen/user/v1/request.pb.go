@@ -10,7 +10,6 @@ import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
-	sync "sync"
 	unsafe "unsafe"
 )
 
@@ -22,11 +21,13 @@ const (
 )
 
 type CreateUserRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	DisplayName   string                 `protobuf:"bytes,1,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
-	PrimaryEmail  string                 `protobuf:"bytes,2,opt,name=primary_email,json=primaryEmail,proto3" json:"primary_email,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_DisplayName  *string                `protobuf:"bytes,1,opt,name=display_name,json=displayName"`
+	xxx_hidden_PrimaryEmail *string                `protobuf:"bytes,2,opt,name=primary_email,json=primaryEmail"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
 func (x *CreateUserRequest) Reset() {
@@ -54,30 +55,89 @@ func (x *CreateUserRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CreateUserRequest.ProtoReflect.Descriptor instead.
-func (*CreateUserRequest) Descriptor() ([]byte, []int) {
-	return file_user_v1_request_proto_rawDescGZIP(), []int{0}
-}
-
 func (x *CreateUserRequest) GetDisplayName() string {
 	if x != nil {
-		return x.DisplayName
+		if x.xxx_hidden_DisplayName != nil {
+			return *x.xxx_hidden_DisplayName
+		}
+		return ""
 	}
 	return ""
 }
 
 func (x *CreateUserRequest) GetPrimaryEmail() string {
 	if x != nil {
-		return x.PrimaryEmail
+		if x.xxx_hidden_PrimaryEmail != nil {
+			return *x.xxx_hidden_PrimaryEmail
+		}
+		return ""
 	}
 	return ""
 }
 
+func (x *CreateUserRequest) SetDisplayName(v string) {
+	x.xxx_hidden_DisplayName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+}
+
+func (x *CreateUserRequest) SetPrimaryEmail(v string) {
+	x.xxx_hidden_PrimaryEmail = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+}
+
+func (x *CreateUserRequest) HasDisplayName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *CreateUserRequest) HasPrimaryEmail() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *CreateUserRequest) ClearDisplayName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_DisplayName = nil
+}
+
+func (x *CreateUserRequest) ClearPrimaryEmail() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_PrimaryEmail = nil
+}
+
+type CreateUserRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	DisplayName  *string
+	PrimaryEmail *string
+}
+
+func (b0 CreateUserRequest_builder) Build() *CreateUserRequest {
+	m0 := &CreateUserRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.DisplayName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		x.xxx_hidden_DisplayName = b.DisplayName
+	}
+	if b.PrimaryEmail != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		x.xxx_hidden_PrimaryEmail = b.PrimaryEmail
+	}
+	return m0
+}
+
 type GetUserRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_UserId      *string                `protobuf:"bytes,1,opt,name=user_id,json=userId"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *GetUserRequest) Reset() {
@@ -105,23 +165,55 @@ func (x *GetUserRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GetUserRequest.ProtoReflect.Descriptor instead.
-func (*GetUserRequest) Descriptor() ([]byte, []int) {
-	return file_user_v1_request_proto_rawDescGZIP(), []int{1}
-}
-
 func (x *GetUserRequest) GetUserId() string {
 	if x != nil {
-		return x.UserId
+		if x.xxx_hidden_UserId != nil {
+			return *x.xxx_hidden_UserId
+		}
+		return ""
 	}
 	return ""
 }
 
+func (x *GetUserRequest) SetUserId(v string) {
+	x.xxx_hidden_UserId = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
+}
+
+func (x *GetUserRequest) HasUserId() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *GetUserRequest) ClearUserId() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_UserId = nil
+}
+
+type GetUserRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	UserId *string
+}
+
+func (b0 GetUserRequest_builder) Build() *GetUserRequest {
+	m0 := &GetUserRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.UserId != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
+		x.xxx_hidden_UserId = b.UserId
+	}
+	return m0
+}
+
 type ListUserRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserIds       []string               `protobuf:"bytes,1,rep,name=user_ids,json=userIds,proto3" json:"user_ids,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state              protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_UserIds []string               `protobuf:"bytes,1,rep,name=user_ids,json=userIds"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
 }
 
 func (x *ListUserRequest) Reset() {
@@ -149,23 +241,38 @@ func (x *ListUserRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ListUserRequest.ProtoReflect.Descriptor instead.
-func (*ListUserRequest) Descriptor() ([]byte, []int) {
-	return file_user_v1_request_proto_rawDescGZIP(), []int{2}
-}
-
 func (x *ListUserRequest) GetUserIds() []string {
 	if x != nil {
-		return x.UserIds
+		return x.xxx_hidden_UserIds
 	}
 	return nil
 }
 
+func (x *ListUserRequest) SetUserIds(v []string) {
+	x.xxx_hidden_UserIds = v
+}
+
+type ListUserRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	UserIds []string
+}
+
+func (b0 ListUserRequest_builder) Build() *ListUserRequest {
+	m0 := &ListUserRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	x.xxx_hidden_UserIds = b.UserIds
+	return m0
+}
+
 type UpdateUserRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	DisplayName   *string                `protobuf:"bytes,1,opt,name=display_name,json=displayName,proto3,oneof" json:"display_name,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_DisplayName *string                `protobuf:"bytes,1,opt,name=display_name,json=displayName"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *UpdateUserRequest) Reset() {
@@ -193,23 +300,57 @@ func (x *UpdateUserRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use UpdateUserRequest.ProtoReflect.Descriptor instead.
-func (*UpdateUserRequest) Descriptor() ([]byte, []int) {
-	return file_user_v1_request_proto_rawDescGZIP(), []int{3}
-}
-
 func (x *UpdateUserRequest) GetDisplayName() string {
-	if x != nil && x.DisplayName != nil {
-		return *x.DisplayName
+	if x != nil {
+		if x.xxx_hidden_DisplayName != nil {
+			return *x.xxx_hidden_DisplayName
+		}
+		return ""
 	}
 	return ""
 }
 
+func (x *UpdateUserRequest) SetDisplayName(v string) {
+	x.xxx_hidden_DisplayName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
+}
+
+func (x *UpdateUserRequest) HasDisplayName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *UpdateUserRequest) ClearDisplayName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_DisplayName = nil
+}
+
+type UpdateUserRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	DisplayName *string
+}
+
+func (b0 UpdateUserRequest_builder) Build() *UpdateUserRequest {
+	m0 := &UpdateUserRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.DisplayName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
+		x.xxx_hidden_DisplayName = b.DisplayName
+	}
+	return m0
+}
+
 type SetUserPrimaryEmailRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	EmailId       string                 `protobuf:"bytes,1,opt,name=email_id,json=emailId,proto3" json:"email_id,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_EmailId     *string                `protobuf:"bytes,1,opt,name=email_id,json=emailId"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *SetUserPrimaryEmailRequest) Reset() {
@@ -237,20 +378,52 @@ func (x *SetUserPrimaryEmailRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use SetUserPrimaryEmailRequest.ProtoReflect.Descriptor instead.
-func (*SetUserPrimaryEmailRequest) Descriptor() ([]byte, []int) {
-	return file_user_v1_request_proto_rawDescGZIP(), []int{4}
-}
-
 func (x *SetUserPrimaryEmailRequest) GetEmailId() string {
 	if x != nil {
-		return x.EmailId
+		if x.xxx_hidden_EmailId != nil {
+			return *x.xxx_hidden_EmailId
+		}
+		return ""
 	}
 	return ""
 }
 
+func (x *SetUserPrimaryEmailRequest) SetEmailId(v string) {
+	x.xxx_hidden_EmailId = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
+}
+
+func (x *SetUserPrimaryEmailRequest) HasEmailId() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *SetUserPrimaryEmailRequest) ClearEmailId() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_EmailId = nil
+}
+
+type SetUserPrimaryEmailRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	EmailId *string
+}
+
+func (b0 SetUserPrimaryEmailRequest_builder) Build() *SetUserPrimaryEmailRequest {
+	m0 := &SetUserPrimaryEmailRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.EmailId != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
+		x.xxx_hidden_EmailId = b.EmailId
+	}
+	return m0
+}
+
 type DeleteUserRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
+	state         protoimpl.MessageState `protogen:"opaque.v1"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -280,9 +453,16 @@ func (x *DeleteUserRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DeleteUserRequest.ProtoReflect.Descriptor instead.
-func (*DeleteUserRequest) Descriptor() ([]byte, []int) {
-	return file_user_v1_request_proto_rawDescGZIP(), []int{5}
+type DeleteUserRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+}
+
+func (b0 DeleteUserRequest_builder) Build() *DeleteUserRequest {
+	m0 := &DeleteUserRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	return m0
 }
 
 var File_user_v1_request_proto protoreflect.FileDescriptor
@@ -296,25 +476,12 @@ const file_user_v1_request_proto_rawDesc = "" +
 	"\x0eGetUserRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\",\n" +
 	"\x0fListUserRequest\x12\x19\n" +
-	"\buser_ids\x18\x01 \x03(\tR\auserIds\"L\n" +
-	"\x11UpdateUserRequest\x12&\n" +
-	"\fdisplay_name\x18\x01 \x01(\tH\x00R\vdisplayName\x88\x01\x01B\x0f\n" +
-	"\r_display_name\"7\n" +
+	"\buser_ids\x18\x01 \x03(\tR\auserIds\"=\n" +
+	"\x11UpdateUserRequest\x12(\n" +
+	"\fdisplay_name\x18\x01 \x01(\tB\x05\xaa\x01\x02\b\x01R\vdisplayName\"7\n" +
 	"\x1aSetUserPrimaryEmailRequest\x12\x19\n" +
 	"\bemail_id\x18\x01 \x01(\tR\aemailId\"\x13\n" +
-	"\x11DeleteUserRequestBCZAgithub.com/shah-dhwanil/grpc-chat/packages/api/gen/user/v1;userv1b\x06proto3"
-
-var (
-	file_user_v1_request_proto_rawDescOnce sync.Once
-	file_user_v1_request_proto_rawDescData []byte
-)
-
-func file_user_v1_request_proto_rawDescGZIP() []byte {
-	file_user_v1_request_proto_rawDescOnce.Do(func() {
-		file_user_v1_request_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_user_v1_request_proto_rawDesc), len(file_user_v1_request_proto_rawDesc)))
-	})
-	return file_user_v1_request_proto_rawDescData
-}
+	"\x11DeleteUserRequestBCZAgithub.com/shah-dhwanil/grpc-chat/packages/api/gen/user/v1;userv1b\beditionsp\xe9\a"
 
 var file_user_v1_request_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_user_v1_request_proto_goTypes = []any{
@@ -338,7 +505,6 @@ func file_user_v1_request_proto_init() {
 	if File_user_v1_request_proto != nil {
 		return
 	}
-	file_user_v1_request_proto_msgTypes[3].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

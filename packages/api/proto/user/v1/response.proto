@@ -1,4 +1,4 @@
-syntax = "proto3";
+edition = "2024";
 package user.v1;
 option go_package = "github.com/shah-dhwanil/grpc-chat/packages/api/gen/user/v1;userv1";
 
@@ -8,8 +8,8 @@ message User {
     string id = 1;
     string display_name = 2;
     string primary_email = 3;
-    optional google.protobuf.Timestamp created_at = 4;
-    optional google.protobuf.Timestamp updated_at = 5;
+    google.protobuf.Timestamp created_at = 4 [features.field_presence=EXPLICIT];
+    google.protobuf.Timestamp updated_at = 5 [features.field_presence=EXPLICIT];
 }
 
 
